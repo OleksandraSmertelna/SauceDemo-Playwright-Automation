@@ -1,0 +1,38 @@
+name: QA Automation CI
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    # UNCOMMENT THIS NEXT LINE ONLY IF YOU ARE USING PLAYWRIGHT
+    # - name: Install Playwright Browsers
+    #   run: npx playwright install --with-deps
+
+    - name: Run JS Automated Tests
+      run: npm run test
+
+    - name: Upload Test Report Artifact
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-execution-report
+        path: playwright-report/   # Change this to your framework's report folder (e.g., cypress/reports/)
+        retention-days: 30
