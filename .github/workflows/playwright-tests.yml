@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    timeout-minutes: 60
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository code
@@ -20,19 +20,23 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm ci
+      run: npm install
 
-    # UNCOMMENT THIS NEXT LINE ONLY IF YOU ARE USING PLAYWRIGHT
-    # - name: Install Playwright Browsers
-    #   run: npx playwright install --with-deps
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
 
-    - name: Run JS Automated Tests
+    - name: Run Playwright Tests
       run: npm run test
+      env:
+        # If your tests depend on variables inside a .env file (like standard test passwords),
+        # Playwright will run fine here. If you need secret login credentials later, 
+        # you can pass them here from GitHub Secrets.
+        CI: true
 
     - name: Upload Test Report Artifact
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: test-execution-report
-        path: playwright-report/   # Change this to your framework's report folder (e.g., cypress/reports/)
+        name: playwright-execution-report
+        path: playwright-report/
         retention-days: 30
