@@ -5,6 +5,7 @@ dotenv.config();
 
 export default defineConfig({
     testDir: './tests/specs',
+    timeout: 30000,
 
     fullyParallel: true,
 
@@ -33,17 +34,16 @@ export default defineConfig({
 
     projects: [
         {
-            name: 'firefox',
+            name: 'chromium',
             use: {
-                ...devices['Desktop Firefox']
+                ...devices['Desktop Chrome']
             }
         },
 
         {
-            name: 'edge',
+            name: 'firefox',
             use: {
-                ...devices['Desktop Edge'],
-                channel: 'msedge'
+                ...devices['Desktop Firefox']
             }
         }
     ]
